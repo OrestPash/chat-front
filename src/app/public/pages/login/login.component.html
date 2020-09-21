@@ -11,9 +11,10 @@
 
     <div class="form-group">
       <label for="password">Password</label><span class="required">*</span>
-      <input id="pass" type="password" formControlName="password" placeholder="••••••••" />
+      <input id="pass" type="password" formControlName="password" placeholder="••••••••"/>
       <div *ngIf="formControls.password?.touched && formControls.password?.errors">
         <div *ngIf="formControls.password?.errors?.required" class="is-invalid">Password is required</div>
+        <div *ngIf="formControls.password?.errors?.minlength" class="is-invalid">Minimum characters - 8</div>
       </div>
     </div>
 

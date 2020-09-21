@@ -16,8 +16,8 @@ export class SignupComponent {
               private _auth: AuthService) {
     this.signupForm = new FormGroup({
       userName: new FormControl('', Validators.required),
-      password: new FormControl('', Validators.required),
-      confirmPassword: new FormControl('', Validators.required)
+      password: new FormControl('', [Validators.required, Validators.minLength(8)]),
+      confirmPassword: new FormControl('', [Validators.required, Validators.minLength(8), this.checkPasswords])
     });
   }
 
@@ -29,10 +29,15 @@ export class SignupComponent {
     if (!this.signupForm.invalid) {
       this._auth.signUp(new SignUpModel(this.signupForm.value))
         .subscribe({
-          next: () => {
-            this._router.navigate(['/login']);
-            alert('User successfully added. Use your credentials to login');
-          }
+          next: e => {
+            if (e.isSuccess) {
+              alert('User successfully added. Use your credentials to login');
+              this._router.navigate(['/login']);
+            } else {
+              alert(e.errors.join(' '));
+            }
+          },
+          error: (e) => alert('Something went wrong')
         });
     } else {
       this.validateForm();
@@ -43,5 +48,9 @@ export class SignupComponent {
     Object.keys(this.signupForm.controls).forEach(key => {
       this.signupForm.controls[key].markAsTouched();
     });
+  }
+
+  public checkPasswords(group: FormGroup) {
+    return group?.value === group?.parent?.controls['password']?.value ? null : { confirmPass: true };
   }
 }

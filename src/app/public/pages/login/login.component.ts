@@ -16,7 +16,7 @@ export class LoginComponent {
               private _auth: AuthService) {
     this.loginForm = new FormGroup({
       userName: new FormControl('', [Validators.required, Validators.email]),
-      password: new FormControl('', [Validators.required, Validators.min(8)]),
+      password: new FormControl('', [Validators.required, Validators.minLength(8)]),
     });
   }
 
@@ -26,9 +26,10 @@ export class LoginComponent {
 
   public login(): void {
     if (!this.loginForm.invalid) {
-      this._auth.login(new LogInModel(this.loginForm.value)).subscribe(
-        () => this._router.navigate(['/chat'])
-      );
+      this._auth.login(new LogInModel(this.loginForm.value)).subscribe({
+        next: () => this._router.navigate(['/chat']),
+        error: () => alert('Wrong email or password')
+      });
     } else {
       this.validateForm();
     }
