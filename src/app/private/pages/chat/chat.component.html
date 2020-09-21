@@ -1,0 +1,44 @@
+<div class="main" *ngIf="messages && messages.length > 0">
+  <h2>Chat-room</h2>
+  <div class="row" style="display: flex;">
+    <div class="col-md-4" style="width: 600px;">
+      <p><b>Hello, {{userName}}</b></p>
+      <div id="inputForm">
+        <form id="login" [formGroup]="messageForm">
+          <label for="username">Text</label><span class="required">*</span>
+          <input formControlName="text" />
+          <button (click)="isEdit ? update() : create()">{{ isEdit ? 'Save' : 'Send' }}</button>
+          <div *ngIf="formControls.text?.touched && formControls.text?.errors">
+            <div *ngIf="formControls.text?.errors?.required" class="is-invalid">Text is required</div>
+          </div>
+        </form>
+      </div>
+      <div>
+        <ng-container *ngFor="let message of messages">
+          <div class="row" style=" display: flex;">
+            <div class="row" *ngIf="!message.isDeleted">
+              <label>{{message.userName}}: </label>
+              <span>{{message.text}}</span>
+              <button *ngIf="message.userId == userId" (click)="edit(message.id, message.text)">Edit</button>
+              <button *ngIf="message.userId == userId" (click)="delete(message.id)">Delete</button>
+            </div>
+            <div class="row" *ngIf="message.isDeleted">
+              <label>Deleted by {{message.userName}} at {{message.updatedAt | date:'medium'}}</label>
+            </div>
+          </div>
+        </ng-container>
+        <div class="row" *ngIf="isLoadMore">
+          <button (click)="showMore()">Show more</button>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <h2>All users</h2>
+      <ng-container *ngFor="let user of users">
+        <div class="row">
+          <p>{{user.name}}</p>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>
